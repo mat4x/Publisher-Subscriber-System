@@ -1,0 +1,54 @@
+html {
+  font-family: sans-serif;
+  height: 100%;
+  width: 100%;
+  background: #0f0f0f; 
+}
+
+a{
+  text-decoration: none;
+  color: white;
+}
+
+.photo{
+  height: 100px;
+  width: 100px;
+  background-color: black;
+}
+
+.channel{
+  padding: 10px 30px;
+  margin: 20px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #2c2a2a;
+}
+
+.details{
+  padding: 0px 10px;
+  width: 80%;
+  background: #2c2a2a;
+  color : white ;
+}
+
+.message{
+  border: 1px solid white;
+  border-radius: 5px;
+  padding: 5px 20px;
+  margin: 30px 10px;
+  /*display: flex;*/
+  justify-content: space-between;
+  /*align-items: center;*/
+  background: #2c2a2a;
+  color: white;
+}
+
+button{
+  height:100px;
+  width: 100px;
+  background-color: #ff2424;
+  color: white;
+  font-size: 2 rem ;
+  border-radius: 2px;
+}
