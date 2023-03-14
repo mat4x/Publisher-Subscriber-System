@@ -4,9 +4,10 @@ PUBLISHERS_COUNT  = 0
 SUBSCRIBERS_COUNT = 0
 
 class Publisher:
-	def __init__(self, Id, name):
-		self.id 		 = Id
-		self.name		 = name
+	def __init__(self, Id, name, description):
+		self.Id   = Id
+		self.name = name
+		self.description = description
 		self.subscribers = list()
 
 	def __repr__(self):
@@ -50,9 +51,9 @@ class Subscriber:
 		print(f"{self.name} : You have a notification from {sender}: {message}")
 
 
-def create_publisher(name):
+def create_publisher(Id, name, description):
 	global PUBLISHERS_COUNT
-	PUBLISHERS.append( Publisher(PUBLISHERS_COUNT, name) )
+	PUBLISHERS.append( Publisher(Id, name, description) )
 	print(f"Publisher {name} created")
 	PUBLISHERS_COUNT += 1
 
