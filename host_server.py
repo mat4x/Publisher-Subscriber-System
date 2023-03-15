@@ -14,7 +14,7 @@ class handler(http.server.SimpleHTTPRequestHandler):
         path = self.path
 
         # Validate request path, and set type
-        if path == "/index.html":
+        if ".html" in path:
             type = "text/html"
         elif path == "/script.js":
             type = "text/javascript"
@@ -36,13 +36,15 @@ class handler(http.server.SimpleHTTPRequestHandler):
         self.end_headers()
         
         # Open the file, read bytes, serve
+        print("-------------", path)
         with open(path[1:], 'rb') as file:
-            if path == "/favicon.ico":
-                self.wfile.write(file.read()) # Send
+            if path not in ("/index.html", "/notification.html"):
+                self.wfile.write(file.read()) # Direct Send
             else:
-                text = file.read()
-                ##HTML INJECTION
-                self.wfile.write(text)
+                html = file.read().decode('utf-8')
+                result = self.dynamic_inject(html, path) #HTML INJECTION
+                print(result)
+                self.wfile.write(result.encode('utf-8'))
 
     
     def do_POST(self):
@@ -57,6 +59,35 @@ class handler(http.server.SimpleHTTPRequestHandler):
             postvar[key.decode()] = postvars[key][0].decode()
 
         do_action(postvar)
+
+    def dynamic_inject(self, html, path):
+        print("INJECT", path)
+        if path == "/index.html":
+            template = '''
+<div class="channel">
+    <div class="photo"></div>
+        <div class="details">
+            <h2>{pblshr.name}</h2>
+	    <p>{pblshr.description}</p>
+		</div>
+		<button value="slyplt">Subscribe</button>
+	</div>'''
+            sections = html.split("<!-- SPLIT -->")
+            for publisher in psb.PUBLISHERS.values():
+                sections.insert( -1, template.format(pblshr=publisher) )
+
+            print(sections)
+            return ''.join(sections)
+
+        elif path == "/notification.html":
+            return html
+
+        else:
+            print("WHAT")
+            return html
+            
+            
+        
 
 Handler = http.server.SimpleHTTPRequestHandler
 
