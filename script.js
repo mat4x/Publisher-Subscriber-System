@@ -15,3 +15,6 @@ function publish() {
 	alert("Article has been Published");
 }
 
+function subscribe(){
+	var user_name = document.getElementById("sub_usr_name").value;
+}

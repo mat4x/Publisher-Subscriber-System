@@ -9,11 +9,41 @@ PORT = 8000
 
 class handler(http.server.SimpleHTTPRequestHandler):
 
-    def do_GET(self):
-        print(self.path, '-'*50)
-        if self.path == '/':
-            self.path = r'./index.html'
-        return http.server.SimpleHTTPRequestHandler.do_GET(self)
+    def do_GET(self, path="index.html"):
+        # Cache request
+        path = self.path
+
+        # Validate request path, and set type
+        if path == "/index.html":
+            type = "text/html"
+        elif path == "/script.js":
+            type = "text/javascript"
+        elif path == "/style.css":
+            type = "text/css"
+        elif path == "/favicon.ico":
+            type = "image/x-icon"
+        else:
+            # Wild-card/default
+            if not path == "/":
+                print("UNRECONGIZED REQUEST: ", path)
+                
+            path = "/index.html"
+            type = "text/html"
+        
+        # Set header with content type
+        self.send_response(200)
+        self.send_header("Content-type", type)
+        self.end_headers()
+        
+        # Open the file, read bytes, serve
+        with open(path[1:], 'rb') as file:
+            if path == "/favicon.ico":
+                self.wfile.write(file.read()) # Send
+            else:
+                text = file.read()
+                ##HTML INJECTION
+                self.wfile.write(text)
+
     
     def do_POST(self):
         print("POST REQUEST")

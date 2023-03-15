@@ -77,13 +77,14 @@ button{
   font-size: 1.5rem;
 }
 
-#pub_usr_name{
+#pub_usr_name, #sub_usr_name{
   height: 2rem;
   width: 15%;
   font-size: 1.2rem;
   text-align: center;
   font-weight: 600;
 }
+
 
 #publish_btn{
   position: relative;
