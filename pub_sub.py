@@ -1,4 +1,6 @@
-PUBLISHERS  = []
+import datetime
+
+PUBLISHERS  = dict()
 SUBSCRIBERS = []
 PUBLISHERS_COUNT  = 0
 SUBSCRIBERS_COUNT = 0
@@ -11,7 +13,7 @@ class Publisher:
 		self.subscribers = list()
 
 	def __repr__(self):
-		return f"Publisher:{self.name}"
+		return f"Publisher {self.name}"
 
 	def add_subscriber(self, subscriber):
 		self.subscribers.append(subscriber)
@@ -19,14 +21,21 @@ class Publisher:
 	def remove_subscriber(self, subscriber):
 		self.subscribers.remove(subscriber)
 
-	def notify_subscribers(self, message=None):
+	def publish_message(self, message):
+		today = datetime.date.today()
+		date  = f"{today.day}-{today.month}-{today.year}"
+		with open(f"{self.Id}.csv", 'a+') as database:
+			database.write(f"{date},{message}\n")
+		self.notify_subscribers()
+
+	def notify_subscribers(self):
 		for subscriber in self.subscribers:
-			subscriber.alert(self, message)
+			subscriber.alert(self)
 
 
 class Subscriber:
 	def __init__(self, Id, name):
-		self.ID			   = Id
+		self.Id			   = Id
 		self.name 		   = name
 		self.subscriptions = list()
 
@@ -47,15 +56,20 @@ class Subscriber:
 			print(f"{self.name} unsubscribed from {publisher}")
 		else: print("Subscription not found!")
 
-	def alert(self, sender, message):
-		print(f"{self.name} : You have a notification from {sender}: {message}")
+	def alert(self, sender):
+		messages = ''
+		with open(f"{sender.Id}.csv", 'r') as database:
+			messages += str( database.readline().strip().split(',') )
+
+		print(f"{self.name} : Notifications from {sender}: {messages}")
 
 
 def create_publisher(Id, name, description):
 	global PUBLISHERS_COUNT
-	PUBLISHERS.append( Publisher(Id, name, description) )
+	PUBLISHERS[Id] = Publisher(Id, name, description)
 	print(f"Publisher {name} created")
 	PUBLISHERS_COUNT += 1
+
 
 def create_subscriber(name):
 	global SUBSCRIBERS_COUNT
@@ -63,9 +77,15 @@ def create_subscriber(name):
 	print(f"Subscriber {name} created")
 	SUBSCRIBERS_COUNT += 1
 
+
+def static_publishers():
+	create_publisher(1101, "Slaypoint", "Roasting Channel")
+	create_publisher(2743, "Computerphile", "Learn all about computers and computing world")
+	create_publisher(3210, "CodeBullet", "Everything about AI,Games and coding")
+
 if __name__ == "__main__":
-	create_publisher("p1")
-	create_publisher("p2")
+	create_publisher(1, "p1", "Desc1")
+	create_publisher(2, "p2", "Desc2")
 
 	create_subscriber("s1")
 	create_subscriber("s2")
@@ -73,16 +93,16 @@ if __name__ == "__main__":
 
 	print()
 
-	SUBSCRIBERS[0].subscribe( PUBLISHERS[0] )
-	SUBSCRIBERS[1].subscribe( PUBLISHERS[0] )
+	SUBSCRIBERS[0].subscribe( PUBLISHERS[1] )
 	SUBSCRIBERS[1].subscribe( PUBLISHERS[1] )
-	SUBSCRIBERS[2].subscribe( PUBLISHERS[1] )
+	SUBSCRIBERS[1].subscribe( PUBLISHERS[2] )
+	SUBSCRIBERS[2].subscribe( PUBLISHERS[2] )
 
 	print()
 
-	PUBLISHERS[0].notify_subscribers("YO1")
-	PUBLISHERS[1].notify_subscribers("YO2")
+	PUBLISHERS[1].publish_message("YO1")
+	PUBLISHERS[2].publish_message("YO2")
 
 	SUBSCRIBERS[2].unsubscribe( PUBLISHERS[1] )
 
-	PUBLISHERS[1].notify_subscribers("YO3")
+	PUBLISHERS[2].publish_message("YO3")

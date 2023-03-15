@@ -20,7 +20,12 @@ class handler(http.server.SimpleHTTPRequestHandler):
         postvars = parse_qs(
                 self.rfile.read(length), 
                 keep_blank_values=1)
-        print(postvars)
+
+        postvar = dict()
+        for key in postvars.keys():
+            postvar[key.decode()] = postvars[key][0].decode()
+
+        do_action(postvar)
 
 Handler = http.server.SimpleHTTPRequestHandler
 
@@ -37,6 +42,15 @@ def generate_publishers():
             file.readline().strip()
 
 
+def do_action(arguments):
+    print(arguments)
+    action = arguments['action']
+    
+    if action == "publish":
+        publisher_name = arguments['publisher']
+        
+        
+    
 if __name__ == "__main__":
     generate_publishers()
     
