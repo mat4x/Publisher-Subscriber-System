@@ -4,25 +4,25 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
-  <title>replit</title>
   <script type="text/javascript" src="script.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
-
-  <link href="style.css" rel="stylesheet" type="text/css" />
+  <link href="style.css" rel="stylesheet" type="text/css">
+  <link rel="icon" type="image/x-icon" href="Book_fav.ico">
+  <title>Publish Page</title>
 </head>
 
 <body>
-  <h1 align="center" style="color: white;">Publisher's Message</h1>
+  <h1 align="center" style="color: white;">Publish a Message</h1>
   <hr>
 
   <div style="color: white; display: flex; justify-content: space-between; align-items: center; margin: 10px;" class="Heading">
-    <h2> Publish your message </h2>
+    <h2>Write the message to your audience!</h2>
     <input id="pub_usr_name" placeholder="User Name">
   </div>
 
   <textarea id="message_box" rows=10 placeholder="Type message..." align="center"></textarea>
 
-  <button style="position: relative; left:68.5%; width: 30%; margin: 0 10px; font-size: 1.5rem; font-weight: 1000;" onclick="publish(); return false;">PUBLISH</button>
+  <button id="publish_btn" onclick="publish(); return false;">PUBLISH</button>
 
 </body>
 

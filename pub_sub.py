@@ -22,10 +22,11 @@ class Publisher:
 		self.subscribers.remove(subscriber)
 
 	def publish_message(self, message):
+		message = message.replace(',', ';')#csv failsafe
 		today = datetime.date.today()
 		date  = f"{today.day}-{today.month}-{today.year}"
 		with open(f"{self.Id}.csv", 'a+') as database:
-			database.write(f"{date},{message}\n")
+			database.write(f"{date},{self.name},{message}\n")
 		self.notify_subscribers()
 
 	def notify_subscribers(self):
@@ -35,8 +36,8 @@ class Publisher:
 
 class Subscriber:
 	def __init__(self, Id, name):
-		self.Id			   = Id
-		self.name 		   = name
+		self.Id   = Id
+		self.name = name
 		self.subscriptions = list()
 
 	def __repr__(self):

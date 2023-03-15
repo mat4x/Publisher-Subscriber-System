@@ -10,6 +10,7 @@ PORT = 8000
 class handler(http.server.SimpleHTTPRequestHandler):
 
     def do_GET(self):
+        print(self.path, '-'*50)
         if self.path == '/':
             self.path = r'./index.html'
         return http.server.SimpleHTTPRequestHandler.do_GET(self)
@@ -48,6 +49,11 @@ def do_action(arguments):
     
     if action == "publish":
         publisher_name = arguments['publisher']
+        try:
+            publisher_obj = psb.PUBLISHERS[publisher_name]
+            publisher_obj.publish_message(arguments['content'])
+        except:
+            print("Publisher not found")
         
         
     
