@@ -79,18 +79,18 @@ class handler(http.server.SimpleHTTPRequestHandler):
             notifications = list()
 
             for pblshr in subscriber.subscriptions:
+                print(subscriber.subscriptions, pblshr)
                 with open(f"{pblshr.Id}.csv") as database:
                     content = 1
                     while True:
-                        print("looping")
                         content = database.readline().strip().split(',')
                         if content == ['']: break
                         notifications.append(content + [pblshr.name])
             
             notifications.sort(key=lambda x: -float(x[0]))
 
-            template = TEMPLATES["notifications"]
             sections = html.split("<!-- SPLIT -->")
+            template = TEMPLATES["notifications"]
 
             for notif in notifications:
                 dt_obj = datetime.datetime.fromtimestamp( float(notif[0]) )
