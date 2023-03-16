@@ -22,6 +22,8 @@ a:hover{
   height: 100px;
   width: 100px;
   background-color: black;
+  border: solid 3px #555;
+  border-radius: 5px;
 }
 
 .channel{
@@ -83,6 +85,13 @@ button{
   font-size: 1.2rem;
   text-align: center;
   font-weight: 600;
+}
+
+#sub_usr_name{
+  line-height: 2rem;
+  font-size: 1rem;
+  color: black;
+  background: white;
 }
 
 

@@ -1,15 +1,16 @@
-import datetime
+import time
 
 PUBLISHERS  = dict()
-SUBSCRIBERS = []
+SUBSCRIBERS = dict()
 PUBLISHERS_COUNT  = 0
 SUBSCRIBERS_COUNT = 0
 
 class Publisher:
-	def __init__(self, Id, name, description):
+	def __init__(self, Id, name, description, img_lnk):
 		self.Id   = Id
 		self.name = name
 		self.description = description
+		self.img_lnk = img_lnk
 		self.subscribers = list()
 
 	def __repr__(self):
@@ -22,11 +23,9 @@ class Publisher:
 		self.subscribers.remove(subscriber)
 
 	def publish_message(self, message):
-		message = message.replace(',', ';')#csv failsafe
-		today = datetime.date.today()
-		date  = f"{today.day}-{today.month}-{today.year}"
+		message = message.replace(',', ';') #csv failsafe
 		with open(f"{self.Id}.csv", 'a+') as database:
-			database.write(f"{date},{self.name},{message}\n")
+			database.write(f"{time.time()},{message}\n")
 		self.notify_subscribers()
 
 	def notify_subscribers(self):
@@ -35,19 +34,19 @@ class Publisher:
 
 
 class Subscriber:
-	def __init__(self, Id, name):
-		self.Id   = Id
-		self.name = name
+	def __init__(self, Id, IP):
+		self.Id = Id
+		self.IP = IP
 		self.subscriptions = list()
 
 	def __repr__(self):
-		return f"Subscriber:{self.name}"
+		return f"Subscriber:{self.Id}"
 
 	def subscribe(self, publisher):
 		if publisher not in self.subscriptions:
 			self.subscriptions.append(publisher)
 			publisher.add_subscriber(self)
-			print(f"{self.name} subscribed to {publisher}")
+			print(f"{self.Id} subscribed to {publisher}")
 		else: print("Already subscribed!")
 
 	def unsubscribe(self, publisher):
@@ -58,24 +57,25 @@ class Subscriber:
 		else: print("Subscription not found!")
 
 	def alert(self, sender):
-		messages = ''
-		with open(f"{sender.Id}.csv", 'r') as database:
-			messages += str( database.readline().strip().split(',') )
+                print("ALERT RECIEVED")
+                messages = ''
+                with open(f"{sender.Id}.csv", 'r') as database:
+                        messages += str( database.readline().strip().split(',') )
 
-		print(f"{self.name} : Notifications from {sender}: {messages}")
+                print(f"{self.name} : Notifications from {sender}: {messages}")
 
 
-def create_publisher(Id, name, description):
+def create_publisher(Id, name, description, img_lnk):
 	global PUBLISHERS_COUNT
-	PUBLISHERS[Id] = Publisher(Id, name, description)
+	PUBLISHERS[Id] = Publisher(Id, name, description, img_lnk)
 	print(f"Publisher {name} created")
 	PUBLISHERS_COUNT += 1
 
 
-def create_subscriber(name):
+def create_subscriber(Id, IP):
 	global SUBSCRIBERS_COUNT
-	SUBSCRIBERS.append( Subscriber(SUBSCRIBERS_COUNT, name) )
-	print(f"Subscriber {name} created")
+	SUBSCRIBERS[Id] = Subscriber(Id, IP)
+	print(f"Subscriber {Id} created")
 	SUBSCRIBERS_COUNT += 1
 
 
@@ -85,12 +85,12 @@ def static_publishers():
 	create_publisher(3210, "CodeBullet", "Everything about AI,Games and coding")
 
 if __name__ == "__main__":
-	create_publisher(1, "p1", "Desc1")
-	create_publisher(2, "p2", "Desc2")
+	create_publisher(1, "p1", "Desc1", '')
+	create_publisher(2, "p2", "Desc2", '')
 
-	create_subscriber("s1")
-	create_subscriber("s2")
-	create_subscriber("s3")
+	create_subscriber("s1", 1)
+	create_subscriber("s2", 2)
+	create_subscriber("s3", 3)
 
 	print()
 
