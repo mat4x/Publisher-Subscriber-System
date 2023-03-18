@@ -17,24 +17,26 @@ class handler(http.server.SimpleHTTPRequestHandler):
 
         # Validate request path, and set type
         if ".html" in path:
-            type = "text/html"
+            req_type = "text/html"
         elif ".js" in path:
-            type = "text/javascript"
+            req_type = "text/javascript"
         elif path == "/style.css":
-            type = "text/css"
+            req_type = "text/css"
         elif path == "/favicon.ico":
-            type = "image/x-icon"
+            req_type = "image/x-icon"
+        elif ".jpg" in path:
+            req_type = "image/x-icon"
         else:
             # Wild-card/default
             if not path == "/":
                 print("UNRECONGIZED REQUEST: ", path)
                 
             path = "/index.html"
-            type = "text/html"
+            req_type = "text/html"
         
         # Set header with content type
         self.send_response(200)
-        self.send_header("Content-type", type)
+        self.send_header("Content-type", req_type)
         self.end_headers()
         
         # Open the file, read bytes, serve
@@ -156,7 +158,7 @@ def do_action(arguments, client_adr=None):
         
 TEMPLATES = {
     "channels" : '''<div class="channel">
-    <img src="{pblshr.img_lnk}" class="photo">
+    <img src="{pblshr.img_lnk}" class="photo" onerror="this.onerror=null; this.src='Default.jpg'" alt="{pblshr.name}_img">
         <div class="details">
             <h2>{pblshr.name}</h2>
 	    <p>{pblshr.description}</p>
