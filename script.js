@@ -21,7 +21,7 @@ function subscribe(channel_usr_name){
 
 	$.post("", {"action":"subscribe", "sub":user_name, "channel":channel_usr_name})
 	document.getElementById(channel_usr_name+"_btn").style.background = "grey";
-	document.getElementById(channel_usr_name+"_btn").innerHTML = "Unsubscribe";
+	document.getElementById(channel_usr_name+"_btn").innerHTML = "Subscribed";
 
 }
 

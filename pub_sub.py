@@ -38,6 +38,7 @@ class Subscriber:
 		self.Id = Id
 		self.IP = IP
 		self.subscriptions = list()
+		self.unread = 0
 
 	def __repr__(self):
 		return f"Subscriber:{self.Id}"
@@ -58,11 +59,8 @@ class Subscriber:
 
 	def alert(self, sender):
                 print("ALERT RECIEVED")
-                messages = ''
-                with open(f"{sender.Id}.csv", 'r') as database:
-                        messages += str( database.readline().strip().split(',') )
-
-                print(f"{self.name} : Notifications from {sender}: {messages}")
+                print(f"{self.Id} : New notifications from {sender}")
+                self.unread += 1
 
 
 def create_publisher(Id, name, description, img_lnk):

@@ -13,12 +13,12 @@ class handler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self, path="index.html"):
         # Cache request
         path = self.path
-        print("-"*20, path)
+        #print("#"*20, path)
 
         # Validate request path, and set type
         if ".html" in path:
             type = "text/html"
-        elif path == "/script.js":
+        elif ".js" in path:
             type = "text/javascript"
         elif path == "/style.css":
             type = "text/css"
@@ -66,6 +66,7 @@ class handler(http.server.SimpleHTTPRequestHandler):
         if path == "/index.html":
             template = TEMPLATES["channels"]
             sections = html.split("<!-- SPLIT -->")
+
             for publisher in psb.PUBLISHERS.values():
                 sections.insert( -1, template.format(pblshr=publisher) )
             return ''.join(sections)
@@ -79,7 +80,6 @@ class handler(http.server.SimpleHTTPRequestHandler):
             notifications = list()
 
             for pblshr in subscriber.subscriptions:
-                print(subscriber.subscriptions, pblshr)
                 with open(f"{pblshr.Id}.csv") as database:
                     content = 1
                     while True:
@@ -99,10 +99,9 @@ class handler(http.server.SimpleHTTPRequestHandler):
                     channel_name = notif[2],
                     date = date,
                     message = notif[1]) )
-            
-            
-            
-            return ''.join(sections)
+            count = subscriber.unread
+            subscriber.unread = 0
+            return ''.join(sections).format(unread_count=count)
 
         else:
             print('#'*10, "WHAT")
@@ -140,16 +139,17 @@ def do_action(arguments, client_adr=None):
         subscriber_usr_name = arguments['subscriber']
         if subscriber_usr_name not in psb.SUBSCRIBERS:
             psb.create_subscriber(subscriber_usr_name, client_adr)
-        else: print("Welcome back")
-        print(psb.SUBSCRIBERS)
+        else:
+            psb.SUBSCRIBERS[subscriber_usr_name].IP = client_adr
+            print(f"Welcome back {subscriber_usr_name}")
 
     elif action == "subscribe":
         psb.SUBSCRIBERS[ arguments['sub'] ].subscribe( psb.PUBLISHERS[ arguments['channel'] ] )
 
-        for pubs in psb.PUBLISHERS.values():
-            print(pubs.subscribers)
-        for subs in psb.SUBSCRIBERS.values():
-            print(subs.subscriptions)
+##        for pubs in psb.PUBLISHERS.values():
+##            print(pubs.subscribers)
+##        for subs in psb.SUBSCRIBERS.values():
+##            print(subs.subscriptions)
         
         
         
