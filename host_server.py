@@ -66,19 +66,31 @@ class handler(http.server.SimpleHTTPRequestHandler):
     def dynamic_inject(self, html, path, cltIP):
         print("INJECT", path)
         if path == "/index.html":
+            for sub in psb.SUBSCRIBERS.values():
+                if sub.IP == cltIP:
+                    subscriber = sub
+                    break
+            else: subscriber = psb.Subscriber()
+
             template = TEMPLATES["channels"]
             sections = html.split("<!-- SPLIT -->")
 
+
             for publisher in psb.PUBLISHERS.values():
-                sections.insert( -1, template.format(pblshr=publisher) )
+                if publisher not in subscriber.subscriptions:
+                    inj = ("Subscribe", "#ff2424", 0)
+                else: inj = ("Unsubscribe", "grey", 1)
+                    
+                sections.insert( -1, template.format(pblshr=publisher, text=inj[0], clr=inj[1], val=inj[2]) )
             return ''.join(sections)
+
 
         elif path == "/notification.html":
             for sub in psb.SUBSCRIBERS.values():
                 if sub.IP == cltIP:
                     subscriber = sub
                     break
-    
+
             notifications = list()
 
             for pblshr in subscriber.subscriptions:
@@ -148,6 +160,9 @@ def do_action(arguments, client_adr=None):
     elif action == "subscribe":
         psb.SUBSCRIBERS[ arguments['sub'] ].subscribe( psb.PUBLISHERS[ arguments['channel'] ] )
 
+    elif action == "unsubscribe":
+        psb.SUBSCRIBERS[ arguments['sub'] ].unsubscribe( psb.PUBLISHERS[ arguments['channel'] ] )
+
 ##        for pubs in psb.PUBLISHERS.values():
 ##            print(pubs.subscribers)
 ##        for subs in psb.SUBSCRIBERS.values():
@@ -163,7 +178,7 @@ TEMPLATES = {
             <h2>{pblshr.name}</h2>
 	    <p>{pblshr.description}</p>
 		</div>
-		<button id="{pblshr.Id}_btn" value="{pblshr.Id}" onclick="subscribe('{pblshr.Id}');">Subscribe</button>
+		<button id="{pblshr.Id}_btn" style="background:{clr}" value={val} onclick="subscribe('{pblshr.Id}', this);">{text}</button>
 	</div>''',
 
     "notifications" : '''<div class="message">

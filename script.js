@@ -15,14 +15,22 @@ function publish() {
 	alert("Article has been Published");
 }
 
-function subscribe(channel_usr_name){
+function subscribe(channel_usr_name, btn){
 	var user_name = document.getElementById("sub_usr_name").innerHTML;
 	console.log(user_name, channel_usr_name)
 
-	$.post("", {"action":"subscribe", "sub":user_name, "channel":channel_usr_name})
-	document.getElementById(channel_usr_name+"_btn").style.background = "grey";
-	document.getElementById(channel_usr_name+"_btn").innerHTML = "Subscribed";
-
+	if (btn.value == 0){
+		btn.value = 1;
+		$.post("", {"action":"subscribe", "sub":user_name, "channel":channel_usr_name});
+		document.getElementById(channel_usr_name+"_btn").style.background = "grey";
+		document.getElementById(channel_usr_name+"_btn").innerHTML = "Unsubscribe";
+	}
+	else{
+		btn.value = 0;
+		$.post("", {"action":"unsubscribe", "sub":user_name, "channel":channel_usr_name});
+		document.getElementById(channel_usr_name+"_btn").style.removeProperty('background');
+		document.getElementById(channel_usr_name+"_btn").innerHTML = "Subscribe";
+	}
 }
 
 function login_sub(){

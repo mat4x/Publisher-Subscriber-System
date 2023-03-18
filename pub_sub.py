@@ -6,7 +6,7 @@ PUBLISHERS_COUNT  = 0
 SUBSCRIBERS_COUNT = 0
 
 class Publisher:
-	def __init__(self, Id, name, description, img_lnk):
+	def __init__(self, Id:str, name:str, description:str, img_lnk:str):
 		self.Id   = Id
 		self.name = name
 		self.description = description
@@ -22,7 +22,7 @@ class Publisher:
 	def remove_subscriber(self, subscriber):
 		self.subscribers.remove(subscriber)
 
-	def publish_message(self, message):
+	def publish_message(self, message:str):
 		message = message.replace(',', ';') #csv failsafe
 		with open(f"{self.Id}.csv", 'a+') as database:
 			database.write(f"{time.time()},{message}\n")
@@ -34,7 +34,7 @@ class Publisher:
 
 
 class Subscriber:
-	def __init__(self, Id, IP):
+	def __init__(self, Id:str='0', IP:str='0'):
 		self.Id = Id
 		self.IP = IP
 		self.subscriptions = list()
@@ -54,7 +54,7 @@ class Subscriber:
 		if publisher in self.subscriptions:
 			self.subscriptions.remove(publisher)
 			publisher.remove_subscriber(self)
-			print(f"{self.name} unsubscribed from {publisher}")
+			print(f"{self.Id} unsubscribed from {publisher}")
 		else: print("Subscription not found!")
 
 	def alert(self, sender):
@@ -78,6 +78,7 @@ def create_subscriber(Id, IP):
 
 
 def static_publishers():
+        #TESTING
 	create_publisher(1101, "Slaypoint", "Roasting Channel")
 	create_publisher(2743, "Computerphile", "Learn all about computers and computing world")
 	create_publisher(3210, "CodeBullet", "Everything about AI,Games and coding")
