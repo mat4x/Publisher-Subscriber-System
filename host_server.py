@@ -8,6 +8,23 @@ import datetime
 
 PORT = 8000
 
+TEMPLATES = {
+    "channels" : '''<div class="channel">
+    <img src="{pblshr.img_lnk}" class="photo chnl_elm" onerror="this.onerror=null; this.src='Default.jpg'" alt="{pblshr.name}_img">
+        <div class="details chnl_elm">
+            <h2>{pblshr.name}</h2>
+	    <p>{pblshr.description}</p>
+	</div>
+        <button class="chnl_elm" id="{pblshr.Id}_btn" style="background:{clr}" value={val} onclick="subscribe('{pblshr.Id}', this);">{text}</button>
+    </div>''',
+
+    "notifications" : '''<div class="message">
+      <h2>{channel_name}</h2>
+      <p>{date}</p>
+      <p>{message}</p>
+    </div>'''
+    }
+
 class handler(http.server.SimpleHTTPRequestHandler):
 
     def do_GET(self, path="index.html"):
@@ -120,22 +137,7 @@ class handler(http.server.SimpleHTTPRequestHandler):
         else:
             print('#'*10, "WHAT")
             return html
-            
-            
         
-
-
-def generate_publishers():
-    with open("channels.txt", 'r') as file:
-        while True:
-            Id   = file.readline().strip()
-            if Id == '': break
-            name = file.readline().strip()
-            desc = file.readline().strip()
-            img_link = file.readline().strip()
-            psb.create_publisher(Id, name, desc, img_link)
-            file.readline().strip()
-
 
 def do_action(arguments, client_adr=None):
     print(arguments)
@@ -167,26 +169,18 @@ def do_action(arguments, client_adr=None):
 ##            print(pubs.subscribers)
 ##        for subs in psb.SUBSCRIBERS.values():
 ##            print(subs.subscriptions)
-        
-        
-        
-        
-TEMPLATES = {
-    "channels" : '''<div class="channel">
-    <img src="{pblshr.img_lnk}" class="photo" onerror="this.onerror=null; this.src='Default.jpg'" alt="{pblshr.name}_img">
-        <div class="details">
-            <h2>{pblshr.name}</h2>
-	    <p>{pblshr.description}</p>
-		</div>
-		<button id="{pblshr.Id}_btn" style="background:{clr}" value={val} onclick="subscribe('{pblshr.Id}', this);">{text}</button>
-	</div>''',
 
-    "notifications" : '''<div class="message">
-      <h2>{channel_name}</h2>
-      <p>{date}</p>
-      <p>{message}</p>
-    </div>'''
-    }
+
+def generate_publishers():
+    with open("channels.txt", 'r') as file:
+        while True:
+            Id   = file.readline().strip()
+            if Id == '': break
+            name = file.readline().strip()
+            desc = file.readline().strip()
+            img_link = file.readline().strip()
+            psb.create_publisher(Id, name, desc, img_link)
+            file.readline().strip()
 
 
 if __name__ == "__main__":
